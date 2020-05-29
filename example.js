@@ -5,7 +5,7 @@ const options = {
     domain: 'beta.meet.jit.si',
     muc: 'conference.beta.meet.jit.si' // FIXME: use XEP-0030
   },
-  bosh: 'https://beta.meet.jit.si/http-bind', // FIXME: use xep-0156 for that
+  bosh: 'https://beta.meet.jit.si/http-bind?room=ciaociao', // FIXME: use xep-0156 for that
 
   // The name of client node advertised in XEP-0115 'c' stanza
   clientNode: 'http://jitsi.org/jitsimeet'
@@ -17,7 +17,7 @@ const confOptions = {
 
 let connection = null;
 let isJoined = false;
-let room = "ciaociao";
+let room = null;
 
 let localTracks = [];
 const remoteTracks = {};
@@ -44,10 +44,10 @@ function onLocalTracks( tracks ) {
       console.log(
         `track audio output device was changed to ${deviceId}` ) );
     if ( localTracks[ i ].getType() === 'video' ) {
-      $( 'body' ).append( `<video autoplay='1' id='localVideo${i}' />` );
+      $( '.wall' ).append( `<div class="videoContainer"><video autoplay='1' id='localVideo${i}' /></div>` );
       localTracks[ i ].attach( $( `#localVideo${i}` )[ 0 ] );
     } else {
-      $( 'body' ).append(
+      $( '.wall' ).append(
         `<audio autoplay='1' muted='true' id='localAudio${i}' />` );
       localTracks[ i ].attach( $( `#localAudio${i}` )[ 0 ] );
     }
@@ -88,10 +88,13 @@ function onRemoteTrack( track ) {
   const id = participant + track.getType() + idx;
 
   if ( track.getType() === 'video' ) {
-    $( 'body' ).append(
-      `<video autoplay='1' id='${participant}video${idx}' />` );
+    $( '.wall' ).append(
+      `<div class="videoContainer"><video autoplay='1' class="otherPartecipant" id='${participant}video${idx}' /></div>` );
+
+    // generateNewBody();
+    addNewStream( participant + "video" + idx )
   } else {
-    $( 'body' ).append(
+    $( '.wall' ).append(
       `<audio autoplay='1' id='${participant}audio${idx}' />` );
   }
   track.attach( $( `#${id}` )[ 0 ] );
@@ -107,7 +110,7 @@ function onConferenceJoined() {
     room.addTrack( localTracks[ i ] );
   }
 
-  console.log( "joined" );
+  init3d();
 }
 
 /**
@@ -130,7 +133,7 @@ function onUserLeft( id ) {
  * That function is called when connection is established successfully
  */
 function onConnectionSuccess() {
-  room = connection.initJitsiConference( 'conference', confOptions );
+  room = connection.initJitsiConference( 'ciaociao', confOptions );
   room.on( JitsiMeetJS.events.conference.TRACK_ADDED, onRemoteTrack );
   room.on( JitsiMeetJS.events.conference.TRACK_REMOVED, track => {
     console.log( `track removed!!!${track}` );
@@ -141,6 +144,7 @@ function onConnectionSuccess() {
   room.on( JitsiMeetJS.events.conference.USER_JOINED, id => {
     console.log( 'user join' );
     remoteTracks[ id ] = [];
+
   } );
   room.on( JitsiMeetJS.events.conference.USER_LEFT, onUserLeft );
   room.on( JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, track => {
@@ -278,6 +282,8 @@ JitsiMeetJS.mediaDevices.addEventListener(
   onDeviceListChanged );
 
 connection.connect();
+
+JitsiMeetJS.setLogLevel( JitsiMeetJS.logLevels.ERROR );
 
 JitsiMeetJS.createLocalTracks( { devices: [ 'audio', 'video' ] } )
   .then( onLocalTracks )
