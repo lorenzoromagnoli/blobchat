@@ -75,14 +75,16 @@ function initScene() {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-  renderer = new THREE.WebGLRenderer();
-  renderer.setClearColor( 0x111, 1 );
+  renderer = new THREE.WebGLRenderer( { alpha: true } );
+  renderer.setClearColor( 0xffffff, 0 );
   renderer.setSize( window.innerWidth, window.innerHeight );
 
   var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
   scene.add( directionalLight );
 
-  document.body.appendChild( renderer.domElement );
+  $( "#video-chat" ).append( renderer.domElement );
+
+  //document.body.appendChild( renderer.domElement );
 
   camera.position.z = 100;
 
@@ -101,8 +103,6 @@ function initScene() {
   scene.add( axesHelper );
 
   window.scene = scene;
-
-
 }
 
 function initLocalBubble() {

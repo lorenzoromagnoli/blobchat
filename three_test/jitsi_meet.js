@@ -1,6 +1,6 @@
 /* global $, JitsiMeetJS */
 
-let roomName = "ciaociao"
+let roomName
 
 const options = {
   hosts: {
@@ -46,7 +46,11 @@ function onLocalTracks( tracks ) {
       console.log(
         `track audio output device was changed to ${deviceId}` ) );
     if ( localTracks[ i ].getType() === 'video' ) {
-      $( 'body' ).append( `<video autoplay='1' id='localVideo${i}' />` );
+      $( 'body' ).append( `<video autoplay='1' id='localVideo${i}' />` )
+
+      console.log( "creating local bubble" );
+      initLocalBubble()
+
       localTracks[ i ].attach( $( `#localVideo${i}` )[ 0 ] );
     } else {
       $( 'body' ).append(
@@ -90,15 +94,15 @@ function onRemoteTrack( track ) {
   const id = participant + track.getType() + idx;
 
   if ( track.getType() === 'video' ) {
-    $( 'body' ).append(
-      `<video autoplay='1' id='${participant}video${idx}' />` );
+    $( 'body' ).append( `<video autoplay='1' id='${participant}video${idx}' />` );
 
-    console.log( `${participant}video${idx}` );
+    console.log( "creating remote bubble" );
     addBubble( `${participant}video${idx}` )
 
   } else {
     $( 'body' ).append(
-      `<audio autoplay='1' id='${participant}audio${idx}' />` );
+      `<audio autoplay='1' id='${participant}audio${idx}' />`
+    );
   }
 
   track.attach( $( `#${id}` )[ 0 ] );
@@ -113,7 +117,6 @@ function onConferenceJoined() {
   for ( let i = 0; i < localTracks.length; i++ ) {
     room.addTrack( localTracks[ i ] );
   }
-  initLocalBubble()
 }
 
 /**
@@ -242,11 +245,18 @@ function switchVideo() { // eslint-disable-line no-unused-vars
       localTracks[ 1 ].addEventListener(
         JitsiMeetJS.events.track.LOCAL_TRACK_STOPPED,
         () => console.log( 'local track stoped' ) );
-      localTracks[ 1 ].attach( $( '#localVideo1' )[ 0 ] );
+      if ( isVideo ) {
+        localTracks[ 1 ].attach( $( '#localVideo1' )[ 0 ] );
+      } else {
+        $( 'body' ).append( `<video autoplay='1' id='shareScreen' />` );
+
+        localTracks[ 1 ].attach( $( '#shareScreen' )[ 0 ] );
+      }
       room.addTrack( localTracks[ 1 ] );
     } )
     .catch( error => console.log( error ) );
 }
+
 
 /**
  *
@@ -280,46 +290,78 @@ const initOptions = {
   desktopSharingFirefoxDisabled: true
 };
 
-JitsiMeetJS.init( initOptions );
-JitsiMeetJS.setLogLevel( JitsiMeetJS.logLevels.ERROR );
+function createConnection( name ) {
 
-connection = new JitsiMeetJS.JitsiConnection( null, null, options );
+  roomName = name
 
-connection.addEventListener(
-  JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
-  onConnectionSuccess );
-connection.addEventListener(
-  JitsiMeetJS.events.connection.CONNECTION_FAILED,
-  onConnectionFailed );
-connection.addEventListener(
-  JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
-  disconnect );
+  const options = {
+    hosts: {
+      domain: 'beta.meet.jit.si',
+      muc: 'conference.beta.meet.jit.si' // FIXME: use XEP-0030
+    },
+    serviceUrl: 'https://beta.meet.jit.si/http-bind?room=' + roomName, // FIXME: use xep-0156 for that
 
-JitsiMeetJS.mediaDevices.addEventListener(
-  JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED,
-  onDeviceListChanged );
+    // The name of client node advertised in XEP-0115 'c' stanza
+    clientNode: 'https://beta.meet.jit.si/ciaociao'
+  };
 
-connection.connect();
 
-JitsiMeetJS.createLocalTracks( { devices: [ 'audio', 'video' ] } )
-  .then( onLocalTracks )
-  .catch( error => {
-    throw error;
-  } );
+  JitsiMeetJS.init( initOptions );
+  JitsiMeetJS.setLogLevel( JitsiMeetJS.logLevels.ERROR );
 
-if ( JitsiMeetJS.mediaDevices.isDeviceChangeAvailable( 'output' ) ) {
-  JitsiMeetJS.mediaDevices.enumerateDevices( devices => {
-    const audioOutputDevices = devices.filter( d => d.kind === 'audiooutput' );
+  connection = new JitsiMeetJS.JitsiConnection( null, null, options );
 
-    if ( audioOutputDevices.length > 1 ) {
-      $( '#audioOutputSelect' ).html(
-        audioOutputDevices
-        .map(
-          d =>
-          `<option value="${d.deviceId}">${d.label}</option>` )
-        .join( '\n' ) );
+  connection.addEventListener(
+    JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED,
+    onConnectionSuccess );
+  connection.addEventListener(
+    JitsiMeetJS.events.connection.CONNECTION_FAILED,
+    onConnectionFailed );
+  connection.addEventListener(
+    JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED,
+    disconnect );
 
-      $( '#audioOutputSelectWrapper' ).show();
+  JitsiMeetJS.mediaDevices.addEventListener(
+    JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED,
+    onDeviceListChanged );
+
+  connection.connect();
+
+  JitsiMeetJS.createLocalTracks( { devices: [ 'audio', 'video' ] } )
+    .then( onLocalTracks )
+    .catch( error => {
+      throw error;
+    } );
+
+  if ( JitsiMeetJS.mediaDevices.isDeviceChangeAvailable( 'output' ) ) {
+    JitsiMeetJS.mediaDevices.enumerateDevices( devices => {
+      const audioOutputDevices = devices.filter( d => d.kind === 'audiooutput' );
+
+      if ( audioOutputDevices.length > 1 ) {
+        $( '#audioOutputSelect' ).html(
+          audioOutputDevices
+          .map(
+            d =>
+            `<option value="${d.deviceId}">${d.label}</option>` )
+          .join( '\n' ) );
+
+        $( '#audioOutputSelectWrapper' ).show();
+      }
+    } );
+  }
+}
+
+function mute() {
+  for ( let i = 0; i < localTracks.length; i++ ) {
+    if ( localTracks[ i ].getType() == "audio" ) {
+      if ( localTracks[ i ].isMuted() ) {
+        localTracks[ i ].unmute();
+        updateMuteIcon( false );
+      } else {
+        localTracks[ i ].mute();
+        updateMuteIcon( true );
+
+      }
     }
-  } );
+  }
 }
