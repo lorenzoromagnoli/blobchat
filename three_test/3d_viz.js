@@ -24,11 +24,11 @@ class Orbital {
 
     this.circle = new THREE.Line(
       this.CircleGeometry,
-      new THREE.LineDashedMaterial( { color: 'aqua' } )
+      //new THREE.LineDashedMaterial( { color: 'aqua' } )
     );
 
     this.planet = new THREE.Mesh(
-      new THREE.SphereBufferGeometry( 10, 32, 32 ), this.videoMaterial
+      new THREE.SphereBufferGeometry( 20, 32, 32 ), this.videoMaterial
     );
     this.planet.position.set( this.radius, 0, 0 );
 
@@ -40,8 +40,8 @@ class Orbital {
     this.arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
 
     this.orbit = new THREE.Group();
-    this.orbit.add( this.arrowHelper )
-    this.orbit.add( this.circle );
+    //this.orbit.add( this.arrowHelper )
+    //this.orbit.add( this.circle );
     this.orbit.add( this.planet );
 
     this.orbit.rotation.x = rotationVector.x;
@@ -97,10 +97,10 @@ function initScene() {
   line.material.opacity = 0.25;
   line.material.transparent = true;
 
-  scene.add( line );
+  //scene.add( line );
 
   var axesHelper = new THREE.AxesHelper( 5 );
-  scene.add( axesHelper );
+  //scene.add( axesHelper );
 
   window.scene = scene;
 }
@@ -132,22 +132,6 @@ function addBubble( id ) {
   //console.log( b );
   scene.add( o.orbit );
 }
-
-// function initObjects() {
-//   for ( let i = 0; i < bubblesCount; i++ ) {
-//     //let b = new Bubble();
-//     let rotVector = new THREE.Vector3( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 )
-//
-//     let o = new Orbital( 50, rotVector );
-//
-//     bubbles.push( o );
-//     //console.log( b );
-//     scene.add( o.orbit );
-//   }
-// }
-
-
-
 
 function animate() {
   requestAnimationFrame( animate );
