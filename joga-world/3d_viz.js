@@ -49,7 +49,7 @@ function loadMesh( name ) {
 
 
 class Orbital {
-  constructor( radius, rotationVector, textureID ) {
+  constructor( radius, rotationVector, textureID, userID ) {
 
     if ( textureID != null ) {
       this.video = document.getElementById( textureID );
@@ -97,6 +97,9 @@ class Orbital {
     this.orbit.rotation.z = rotationVector.z;
 
     this.orbit.name = textureID;
+    this.divName = textureID;
+    this.jitsiUserID = userID;
+
 
     scene.add( this.orbit );
 
@@ -136,6 +139,7 @@ class Orbital {
   startMorfing( targetIndex ) {
     this.morfTarget = targetIndex
     this.morfStarted = true;
+    notifyShapeChanged( this.jitsiUserID );
   }
 
   morf() {
@@ -153,9 +157,30 @@ class Orbital {
     currentGeometry.computeVertexNormals();
     currentGeometry.computeFaceNormals();
   }
+
+
+  setId( ID ) {
+    this.jitsiUserID = ID;
+  }
 }
 
 let o;
+
+function assignIdToLocalTrack( ID ) {
+  for ( let i = 0; i < bubbles.length; i++ ) {
+    if ( bubbles[ i ].orbit.name == "localVideo1" ) {
+      bubbles[ i ].setID = ID
+    }
+  }
+}
+
+function getLocalBubble() {
+  for ( let i = 0; i < bubbles.length; i++ ) {
+    if ( bubbles[ i ].orbit.name == "localVideo1" ) {
+      return ( bubbles[ i ] );
+    }
+  }
+}
 
 function initScene() {
   scene = new THREE.Scene();
@@ -195,6 +220,7 @@ function initScene() {
 }
 
 
+
 function initLocalBubble() {
   let rotVector = new THREE.Vector3( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 )
   let o = new Orbital( 50, rotVector, "localVideo1" );
@@ -213,16 +239,24 @@ function initLocalBubble() {
 }
 
 
-function startMorfing( id, morfTargetID ) {
+// function startMorfing( id, morfTargetID ) {
+//   for ( let i = 0; i < bubbles.length; i++ ) {
+//     if ( bubbles[ i ].orbit.name == id ) {
+//       if ( bubbles[ i ].currentGeometryIndex != morfTargetID ) {
+//         bubbles[ i ].startMorfing( morfTargetID );
+//         notifyShapeChanged( morfTargetID )
+//       } else {}
+//     }
+//   }
+// }
+
+function changeShape( id, targetShape ) {
   for ( let i = 0; i < bubbles.length; i++ ) {
-    if ( bubbles[ i ].orbit.name == id ) {
-      if ( bubbles[ i ].currentGeometryIndex != morfTargetID ) {
-        bubbles[ i ].startMorfing( morfTargetID );
-      } else {}
+    if ( bubbles[ i ].jitsiUserID == id ) {
+      bubbles[ i ].startMorfing( targetShape );
     }
   }
 }
-
 
 function deleteBubble( id ) {
   var selectedObject = scene.getObjectByName( id );

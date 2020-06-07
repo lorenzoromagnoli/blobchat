@@ -49,7 +49,10 @@ async function predict() {
       selectedClass = i;
     }
   }
-  startMorfing( "localVideo1", selectedClass );
+
+  getLocalBubble().startMorfing( selectedClass );
+
+  //  startMorfing( "localVideo1", selectedClass );
   for ( let i = 0; i < maxPredictions; i++ ) {
     const classPrediction =
       prediction[ i ].className + ': ' + prediction[ i ].probability.toFixed( 2 );

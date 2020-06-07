@@ -136,6 +136,8 @@ function onUserLeft( id ) {
   }
 }
 
+
+let isLocalUserIDAssigned = false;
 /**
  * That function is called when connection is established successfully
  */
@@ -146,8 +148,8 @@ function onConnectionSuccess() {
     console.log( `track removed!!!${track}` );
 
 
-    console.log( remoteTracks );
-    console.log( track.containers );
+    // console.log( remoteTracks );
+    // console.log( track.containers );
     $( track.containers ).remove()
 
     $( track.containers ).each( function( index ) {
@@ -165,7 +167,10 @@ function onConnectionSuccess() {
     onConferenceJoined );
   room.on( JitsiMeetJS.events.conference.USER_JOINED, id => {
     console.log( 'user join' );
-    remoteTracks[ id ] = [];
+    if ( !isLocalUserIDAssigned ) {
+      assignIdToLocalTrack( room.myUserId() );
+      isLocalUserIDAssigned = true;
+    }
   } );
   room.on( JitsiMeetJS.events.conference.USER_LEFT, onUserLeft );
   room.on( JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, track => {
@@ -181,6 +186,24 @@ function onConnectionSuccess() {
     JitsiMeetJS.events.conference.PHONE_NUMBER_CHANGED,
     () => console.log( `${room.getPhoneNumber()} - ${room.getPhonePin()}` ) );
   room.join();
+
+  room.addCommandListener( "shapeChanged", function( values ) {
+    //console.log( values );
+    changeShape( values.attributes.userdID, values.attributes.shapeID );
+  } )
+}
+
+function notifyShapeChanged( shapeID ) {
+  let userID = room.myUserId();
+  let message = {
+    value: shapeID,
+    attributes: {
+      shapeID: shapeID,
+      userdID: userID,
+    }, // map with keys the name of the attribute and values - the values of the attributes.
+    children: [] // array with JS object with the same structure.
+  }
+  room.sendCommandOnce( "shapeChanged", message );
 }
 
 /**
