@@ -25,7 +25,7 @@ function loadMesh( name ) {
       mesh.geometry = geometry;
 
       mesh.geometry.scale( 10, 10, 10 );
-      mesh.geometry.rotateZ( -Math.PI / 2 );
+      //      mesh.geometry.rotateY( Math.PI );
 
       mesh.geometry.name = name;
 
@@ -53,8 +53,14 @@ class Orbital {
 
     if ( textureID != null ) {
       this.video = document.getElementById( textureID );
+
+      //this.video.scale( -1, 1 );
       console.log( this.video );
       this.texture = new THREE.VideoTexture( this.video );
+      this.texture.flipY = false;
+      // this.texture.wrapS = THREE.RepeatWrapping;
+      // this.texture.repeat.x = -1;
+
       this.videoMaterial = new THREE.MeshBasicMaterial( { map: this.texture } );
     } else {
       this.videoMaterial = new THREE.MeshBasicMaterial( {} )
@@ -79,6 +85,7 @@ class Orbital {
       baseGeometry, this.videoMaterial
     );
     this.planet.position.set( this.radius, 0, 0 );
+    this.planet.scale.set( -1, 1, 1 );
 
 
     var dir = new THREE.Vector3( 0, 0, 1 ).normalize();
@@ -118,7 +125,7 @@ class Orbital {
 
     this.orbit.rotateOnAxis( this.rotationAxis, this.rotationSpeed );
 
-    this.planet.lookAt( -100, 0, 0 );
+    this.planet.lookAt( camera.position );
 
   }
 
@@ -218,8 +225,11 @@ function initScene() {
 
   window.scene = scene;
 
-  loadMesh( "sphere" );
   loadMesh( "cube" );
+  loadMesh( "arancino" );
+  loadMesh( "clap" );
+  loadMesh( "cross" );
+
 }
 
 

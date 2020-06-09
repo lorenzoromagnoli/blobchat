@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/F8s_wBw74/";
+const URL = "https://teachablemachine.withgoogle.com/models/qPL5gjP7I/";
 let model, webcamCanvas, ctx, labelContainer, maxPredictions;
 
 async function initTFjs( videoContainerID ) {
