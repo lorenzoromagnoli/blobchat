@@ -137,9 +137,12 @@ class Orbital {
   }
 
   startMorfing( targetIndex ) {
-    this.morfTarget = targetIndex
-    this.morfStarted = true;
-    notifyShapeChanged( this.jitsiUserID );
+
+    if ( this.currentGeometryIndex != targetIndex ) {
+      this.morfTarget = targetIndex
+      this.morfStarted = true;
+      notifyShapeChanged( targetIndex );
+    }
   }
 
   morf() {
@@ -159,7 +162,7 @@ class Orbital {
   }
 
 
-  setId( ID ) {
+  setjitsiUserID( ID ) {
     this.jitsiUserID = ID;
   }
 }
@@ -169,7 +172,7 @@ let o;
 function assignIdToLocalTrack( ID ) {
   for ( let i = 0; i < bubbles.length; i++ ) {
     if ( bubbles[ i ].orbit.name == "localVideo1" ) {
-      bubbles[ i ].setID = ID
+      bubbles[ i ].setjitsiUserID( ID )
     }
   }
 }
@@ -251,9 +254,16 @@ function initLocalBubble() {
 // }
 
 function changeShape( id, targetShape ) {
-  for ( let i = 0; i < bubbles.length; i++ ) {
-    if ( bubbles[ i ].jitsiUserID == id ) {
-      bubbles[ i ].startMorfing( targetShape );
+  if ( id == getLocalBubble().jitsiUserID ) {
+    "I already changed myself"
+  } else {
+    for ( let i = 0; i < bubbles.length; i++ ) {
+      if ( bubbles[ i ].jitsiUserID == id ) {
+        if ( bubbles[ i ].currentGeometryIndex != targetShape ) {
+          bubbles[ i ].startMorfing( targetShape );
+          return;
+        }
+      }
     }
   }
 }
@@ -270,9 +280,10 @@ function deleteBubble( id ) {
 }
 
 
-function addBubble( id ) {
+function addBubble( id, videoId ) {
   let rotVector = new THREE.Vector3( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 )
-  let o = new Orbital( 50, rotVector, id );
+  let o = new Orbital( 50, rotVector, videoId );
+  o.setjitsiUserID( id )
   bubbles.push( o );
   //console.log( b );
   scene.add( o.orbit );

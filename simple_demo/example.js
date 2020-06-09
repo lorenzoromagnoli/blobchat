@@ -130,7 +130,7 @@ function onUserLeft( id ) {
  * That function is called when connection is established successfully
  */
 function onConnectionSuccess() {
-  room = connection.initJitsiConference( 'conference', confOptions );
+  room = connection.initJitsiConference( roomName, confOptions );
   room.on( JitsiMeetJS.events.conference.TRACK_ADDED, onRemoteTrack );
   room.on( JitsiMeetJS.events.conference.TRACK_REMOVED, track => {
     console.log( `track removed!!!${track}` );

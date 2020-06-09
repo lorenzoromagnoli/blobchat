@@ -98,7 +98,7 @@ function onRemoteTrack( track ) {
     $( 'body' ).append( `<video autoplay='1' id='${participant}video${idx}' />` );
 
     console.log( "creating remote bubble" );
-    addBubble( `${participant}video${idx}` )
+    addBubble( participant, `${participant}video${idx}` )
 
   } else {
     $( 'body' ).append(
@@ -115,6 +115,8 @@ function onRemoteTrack( track ) {
 function onConferenceJoined() {
   console.log( 'conference joined!' );
   isJoined = true;
+  assignIdToLocalTrack( room.myUserId() );
+
   for ( let i = 0; i < localTracks.length; i++ ) {
     room.addTrack( localTracks[ i ] );
   }
@@ -137,7 +139,6 @@ function onUserLeft( id ) {
 }
 
 
-let isLocalUserIDAssigned = false;
 /**
  * That function is called when connection is established successfully
  */
@@ -167,10 +168,7 @@ function onConnectionSuccess() {
     onConferenceJoined );
   room.on( JitsiMeetJS.events.conference.USER_JOINED, id => {
     console.log( 'user join' );
-    if ( !isLocalUserIDAssigned ) {
-      assignIdToLocalTrack( room.myUserId() );
-      isLocalUserIDAssigned = true;
-    }
+
   } );
   room.on( JitsiMeetJS.events.conference.USER_LEFT, onUserLeft );
   room.on( JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, track => {
@@ -188,7 +186,7 @@ function onConnectionSuccess() {
   room.join();
 
   room.addCommandListener( "shapeChanged", function( values ) {
-    //console.log( values );
+    console.log( "receive shape changed command from ", values.attributes.userdID );
     changeShape( values.attributes.userdID, values.attributes.shapeID );
   } )
 }
