@@ -24,8 +24,8 @@ function loadMesh( name ) {
       var geometry = new THREE.Geometry().fromBufferGeometry( mesh.geometry );
       mesh.geometry = geometry;
 
-      mesh.geometry.scale( 10, 10, 10 );
-      //      mesh.geometry.rotateY( Math.PI );
+      mesh.geometry.scale( 15, 15, 15 );
+      mesh.geometry.rotateY( Math.PI );
 
       mesh.geometry.name = name;
 
@@ -149,6 +149,7 @@ class Orbital {
       this.morfTarget = targetIndex
       this.morfStarted = true;
       notifyShapeChanged( targetIndex );
+
     }
   }
 
@@ -166,6 +167,7 @@ class Orbital {
     currentGeometry.verticesNeedUpdate = true;
     currentGeometry.computeVertexNormals();
     currentGeometry.computeFaceNormals();
+
   }
 
 
@@ -225,10 +227,10 @@ function initScene() {
 
   window.scene = scene;
 
-  loadMesh( "cube" );
-  loadMesh( "arancino" );
-  loadMesh( "clap" );
-  loadMesh( "cross" );
+  loadMesh( "w" );
+  loadMesh( "m" );
+  loadMesh( "c" );
+  loadMesh( "a" );
 
 }
 
