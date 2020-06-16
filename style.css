@@ -35,7 +35,9 @@ color: #1400FF;
 
 .experiment{
   background-color: #1400FF;
+  margin-bottom: 50px;
 }
+
 .experiment .content-wrapper{
   padding: 80px;
   display: block;

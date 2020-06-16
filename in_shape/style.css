@@ -58,6 +58,7 @@ video {
 input {
   -webkit-appearance: none;
   appearance: none;
+  background-color: transparent;
 }
 
 input {
