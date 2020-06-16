@@ -28,22 +28,6 @@ function loadObject( name ) {
       //mesh.material.visible = false;
       scene.add( mesh );
 
-      // var pointsMaterial = new THREE.PointsMaterial( {
-      //
-      //   size: 10,
-      //   sizeAttenuation: false,
-      //   map: new THREE.TextureLoader().load( 'disc.png' ),
-      //   alphaTest: 0.5,
-      //   morphTargets: true
-      //
-      // } );
-      //
-      // var points = new THREE.Points( mesh.geometry, pointsMaterial );
-      //
-      // points.morphTargetInfluences = mesh.morphTargetInfluences;
-      // points.morphTargetDictionary = mesh.morphTargetDictionary;
-      //
-      // mesh.add( points );
 
     },
     // called while loading is progressing
