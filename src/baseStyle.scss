@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;700");
+
+
+body{
+  width: 100%;
+  font-family: Roboto Mono;
+}
+
+.header{
+width: 100%;
+
+  .title{
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    line-height: 158px;
+    text-align: center;
+    color: #1400FF;
+  }
+
+  .subtitle{
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 26px;
+  text-align: center;
+  color: #1400FF;
+  }
+}
+
+.column-wrapper{
+  max-width: 1146px;
+  margin: auto;
+  margin-top: 100px;
+}
+
+#blobchat .image{
+  background-image: url("./images/blobchat.jpg");
+}
+
+#in_shape .image{
+  background-image: url("./images/inshape.jpg");
+}
+
+.experiment{
+  background-color: #1400FF;
+  margin-bottom: 50px;
+
+  .content-wrapper{
+    padding: 80px;
+    display: block;
+  }
+  .title{
+    font-size: 30px;
+    color: #fff;
+    font-weight: bold;
+  }
+  .image{
+    width: 90%;
+    margin: 30px 0px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 400px;
+    img{
+      width: 100%;
+    }
+  }
+
+  .content .text{
+    font-size: 30px;
+    color: #fff;
+    max-width: 50%;
+  display: inline-block;
+    }
+
+  .content .button{
+    background-color: white;
+    font-size: 20px;
+    color: #1400FF;
+    max-width: 30%;
+    padding: 20px;
+    display: inline-block;
+    font-weight: bold;
+    float: right;
+    position: relative;
+    box-shadow: 0px 5px #0c009b;
+    transition: .5s all;
+
+  }
+  .content .button:hover{
+    box-shadow: 0px 10px #0c009b;
+  }
+
+}
