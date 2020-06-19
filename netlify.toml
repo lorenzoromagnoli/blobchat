@@ -12,4 +12,4 @@
   publish = "dist/"
 
   # Default build command.
-  command = "npm start build"
+  command = "npm run build"
