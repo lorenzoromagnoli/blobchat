@@ -8,7 +8,7 @@ import '@fortawesome/fontawesome-free/js/brands'
 import './baseStyle.scss';
 
 //load images
-import blobchatImage from './images/blobchat.jpg';
-import inshapeImage from './images/inshape.jpg';
+import blobchatImage from './assets/images/blobchat.jpg';
+import inshapeImage from './assets/images/inshape.jpg';
 
 console.log( "index" )

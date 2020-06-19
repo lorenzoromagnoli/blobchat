@@ -4,6 +4,7 @@
 body{
   width: 100%;
   font-family: Roboto Mono;
+  margin: 0px;
 }
 
 .header{
@@ -35,11 +36,11 @@ width: 100%;
 }
 
 #blobchat .image{
-  background-image: url("./images/blobchat.jpg");
+  background-image: url("./assets/images/blobchat.jpg");
 }
 
 #in_shape .image{
-  background-image: url("./images/inshape.jpg");
+  background-image: url("./assets/images/inshape.jpg");
 }
 
 .experiment{

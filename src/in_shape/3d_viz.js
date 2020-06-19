@@ -1,6 +1,17 @@
+import TWEEN from '@tweenjs/tween.js';
+
+
 //load threejs library
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader';
+
+import cmapNX from '../assets/images/cubemap/nx.png';
+import cmapNY from '../assets/images/cubemap/ny.png';
+import cmapNZ from '../assets/images/cubemap/nz.png';
+import cmapPX from '../assets/images/cubemap/px.png';
+import cmapPY from '../assets/images/cubemap/py.png';
+import cmapPZ from '../assets/images/cubemap/pz.png';
+
 
 const loader = new GLTFLoader();
 
@@ -24,11 +35,20 @@ export default class ThreeScene {
     this.worldLoaded = false;
     this.shapeLoaded = false;
 
+
     this.mesh;
     this.loadModels();
     this.initScene();
     // initObjects()
     this.animate();
+
+    window.addEventListener( 'resize', this.onWindowResize.bind( this ), false );
+  }
+
+  onWindowResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize( window.innerWidth, window.innerHeight );
   }
 
   loadModels() {
@@ -42,9 +62,10 @@ export default class ThreeScene {
 
   loadEnvMap() {
     var r = "cubemap/";
-    var urls = [ r + "px.png", r + "nx.png",
-      r + "py.png", r + "ny.png",
-      r + "pz.png", r + "nz.png"
+    var urls = [
+      cmapPX, cmapNX,
+      cmapPY, cmapNY,
+      cmapPZ, cmapNZ
     ];
 
     this.envMap = new THREE.CubeTextureLoader().load( urls );
@@ -81,7 +102,7 @@ export default class ThreeScene {
 
   loadEnvitonment( done ) {
 
-    loader.load( '3dModels/island-stage.gltf', ( gltf ) => {
+    loader.load( '/3dModels/island-stage.gltf', ( gltf ) => {
 
         this.loadedScene = gltf.scene;
 
@@ -177,9 +198,9 @@ export default class ThreeScene {
     var selectedObject = scene.getObjectByName( id );
     scene.remove( selectedObject );
     console.log( "removed" + id );
-    for ( let i = 0; i < bubbles.length; i++ ) {
-      if ( bubbles[ i ].shape.name == id ) {
-        bubbles.splice( i, 1 );
+    for ( let i = 0; i < this.bubbles.length; i++ ) {
+      if ( this.bubbles[ i ].shape.name == id ) {
+        this.bubbles.splice( i, 1 );
         break;
       }
     }
@@ -217,8 +238,7 @@ export default class ThreeScene {
 
 
   addBubble( id, videoId ) {
-    let rotVector = new THREE.Vector3( Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2 )
-    let o = new Shape( videoId );
+    let o = new Shape( videoId, this.mesh );
     o.setjitsiUserID( id )
     this.bubbles.push( o );
     //console.log( b );

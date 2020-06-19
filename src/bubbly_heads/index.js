@@ -1,21 +1,21 @@
-//load jquery
+//load css
+import '../baseStyle.scss';
+import './style.scss';
+
 import * as JMEET from './jitsi_meet';
 import ThreeScene from './3d_viz.js';
-import PosenetPredictor from './posenet.js';
+
 
 let scene = new ThreeScene();
-let predictor = new PosenetPredictor( ( classIndex ) => { //callback to invoke once a new class is detected
-  scene.getLocalBubble().changeShape( classIndex );
-  JMEET.notifyShapeChanged( classIndex );
-} );
 
 $( document ).ready( function() {
   let roomNameFromUrl = getRoomNameFromUrl();
-  if ( roomNameFromUrl != "#" && roomNameFromUrl != "" && roomNameFromUrl != undefined ) {
+  if ( roomNameFromUrl != null ) {
     console.log( "the room name is set already" );
     startChat( roomNameFromUrl );
   }
 } );
+
 
 $( ".room-name .button" ).click( function() {
   let roomName = $( ".room-name input" ).val();
@@ -28,7 +28,23 @@ $( ".room-name .button" ).click( function() {
 function startChat( roomName ) {
   setTimeout( function() {
     console.log( roomName );
-    JMEET.createConnection( roomName, scene, predictor );
+    JMEET.createConnection(
+      roomName,
+      ( videoContainerID ) => { //called afterWebcamStarts
+        console.log( "creating local bubble" );
+        scene.initLocalBubble()
+      },
+      ( assignedJitsiUserID ) => { //called after conference is joined
+      },
+      ( participantID, videoContainer ) => { //called AfterSomeoneJoins
+        console.log( "creating remote bubble" );
+        debugger;
+        scene.addBubble( videoContainer )
+      },
+      ( jistsiUserID ) => { //called afterSomeoneLeaves
+        scene.deleteBubble( jistsiUserID );
+      },
+    );
     showVideoChat();
     $( ".roomName" ).html( roomName );
   }, 2000 )
@@ -36,17 +52,19 @@ function startChat( roomName ) {
 
 function getRoomNameFromUrl() {
   let url = window.location.href;
-  let lastSlashPosition = url.lastIndexOf( "/" );
-  let roomName = url.substring( lastSlashPosition + 2, url.length );
-  return ( roomName );
+  let lastSlashPosition = url.lastIndexOf( "#" );
+
+  if ( lastSlashPosition == -1 ) {
+    return null;
+  } else {
+    let roomName = url.substring( lastSlashPosition, url.length );
+    return ( roomName );
+  }
 }
 
 function renameUrl( roomName ) {
   let url = window.location.href;
-  let lastSlashPosition = url.lastIndexOf( "/" );
-  let baseUrl = url.substring( 0, lastSlashPosition + 1 );
-  console.log( baseUrl )
-  let chatUrl = baseUrl + "#" + roomName;
+  let chatUrl = url + "/#" + roomName;
   window.location.replace( chatUrl )
 }
 
@@ -66,5 +84,6 @@ function updateMuteIcon( isMuted ) {
     $( "#mutebtn i" ).removeClass( "fa-microphone" ).addClass( "fa-microphone-slash" )
   } else {
     $( "#mutebtn i" ).removeClass( "fa-microphone-slash" ).addClass( "fa-microphone" )
+
   }
 }
