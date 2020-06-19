@@ -1,14 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Gabriela");
-
-
-body{
+body {
   font-family: 'Gabriela', serif;
   width: 100%;
   height: 100%;
   display: block;
-  background: rgb(238,174,202);
-  background: linear-gradient(180deg, rgba(238,174,202,1) 0%, rgba(167,134,180,1) 100%);
-  color: #fff;
 }
 
 html {
@@ -61,7 +55,6 @@ video {
 input {
   -webkit-appearance: none;
   appearance: none;
-  background-color: transparent;
 }
 
 input {
