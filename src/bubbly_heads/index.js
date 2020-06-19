@@ -38,7 +38,6 @@ function startChat( roomName ) {
       },
       ( participantID, videoContainer ) => { //called AfterSomeoneJoins
         console.log( "creating remote bubble" );
-        debugger;
         scene.addBubble( videoContainer )
       },
       ( jistsiUserID ) => { //called afterSomeoneLeaves
@@ -58,8 +57,16 @@ function getRoomNameFromUrl() {
     return null;
   } else {
     let roomName = url.substring( lastSlashPosition, url.length );
+    if ( roomName = "#wouter" ) {
+      console.log( "hey, it's wouter's birtday!" )
+      $( 'body' ).css( "background-image", "url('https://media.giphy.com/media/l4KhTf1bkmfviq0Za/source.gif')" );
+      $( 'body' ).css( "background-size", "cover" );
+
+    }
     return ( roomName );
   }
+
+
 }
 
 function renameUrl( roomName ) {
