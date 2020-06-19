@@ -45,7 +45,7 @@ function startChat( roomName ) {
       },
       ( participantID, videoContainer ) => { //called AfterSomeoneJoins
         console.log( "creating remote bubble" );
-        scene.addBubble( participantID )
+        scene.addBubble( participantID, videoContainer )
       },
       ( jistsiUserID ) => { //called afterSomeoneLeaves
         scene.deleteBubble( jistsiUserID );
