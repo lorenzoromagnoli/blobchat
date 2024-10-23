@@ -38,7 +38,7 @@ export default class ThreeScene {
 
     this.camera.position.z = 100;
 
-    var geometry = new THREE.BoxBufferGeometry( this.boundingBoxSize, this.boundingBoxSize, this.boundingBoxSize );
+    var geometry = new THREE.BoxGeometry( this.boundingBoxSize, this.boundingBoxSize, this.boundingBoxSize );
 
     var wireframe = new THREE.WireframeGeometry( geometry );
 
@@ -106,7 +106,7 @@ class Orbital {
     this.radius = radius;
 
     this.CircleGeometry = new THREE.CircleGeometry( this.radius, 100 );
-    this.CircleGeometry.vertices.shift();
+    //this.CircleGeometry.vertices.shift();
 
     this.circle = new THREE.Line(
       this.CircleGeometry,
@@ -114,7 +114,7 @@ class Orbital {
     );
 
     this.planet = new THREE.Mesh(
-      new THREE.SphereBufferGeometry( 20, 32, 32 ), this.videoMaterial
+      new THREE.SphereGeometry( 20, 32, 32 ), this.videoMaterial
     );
     this.planet.position.set( this.radius, 0, 0 );
 

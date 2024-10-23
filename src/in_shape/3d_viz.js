@@ -1,9 +1,8 @@
 import TWEEN from '@tweenjs/tween.js';
 
-
 //load threejs library
 import * as THREE from 'three';
-import GLTFLoader from 'three-gltf-loader';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 import cmapNX from '../assets/images/cubemap/nx.png';
 import cmapNY from '../assets/images/cubemap/ny.png';
@@ -165,7 +164,7 @@ export default class ThreeScene {
     this.renderer = new THREE.WebGLRenderer( { alpha: true } );
     this.renderer.setSize( window.innerWidth, window.innerHeight );
 
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.outputEncoding = THREE.SRGBColorSpace;
     this.renderer.physicallyCorrectLights = true;
     this.renderer.shadowMapEnabled = true;
 
@@ -176,7 +175,7 @@ export default class ThreeScene {
     this.camera.position.set( 0, 4, 20 )
     this.camera.rotation.x = -0.25
 
-    var geometry = new THREE.BoxBufferGeometry( this.boundingBoxSize, this.boundingBoxSize, this.boundingBoxSize );
+    var geometry = new THREE.BoxGeometry( this.boundingBoxSize, this.boundingBoxSize, this.boundingBoxSize );
 
 
     this.initlights()
